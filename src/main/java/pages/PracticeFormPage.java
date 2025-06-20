@@ -1,5 +1,9 @@
 package pages;
 
+import dto.Student;
+import enums.Gender;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -22,13 +26,6 @@ public class PracticeFormPage extends BasePage {
     @FindBy(css = "input#userEmail")
     WebElement inputEmail;
 
-    @FindBy(css = "label[for='gender-radio-1']")
-    WebElement btnGenderMale;
-    @FindBy(css = "label[for='gender-radio-2']")
-    WebElement btnGenderFemale;
-    @FindBy(css = "label[for='gender-radio-3']")
-    WebElement btnGenderOther;
-
     @FindBy(css = "input#userNumber")
     WebElement inputPhone;
 
@@ -46,7 +43,7 @@ public class PracticeFormPage extends BasePage {
     WebElement checkboxHobbiesMusic;
 
     @FindBy(css = "textarea#currentAddress")
-    WebElement inputAddress;
+    WebElement textareaAddress;
 
     @FindBy(css = "button#submit")
     WebElement btnSubmit;
@@ -54,40 +51,43 @@ public class PracticeFormPage extends BasePage {
     @FindBy(xpath = "//table[contains(@class, 'table table-dark table-striped table-bordered table-hover')]")
     WebElement tableResults;
 
-    public void inputStudentRegForm(String firstName, String lastName, String email, String gender, String phone,
-                                    String birthdate, String subjects, boolean hobbySports, boolean hobbyReading, boolean hobbyMusic,
-                                    String address) {
+    public void inputStudentRegForm(Student student) {
         hideBanner();
         hideFooter();
-        inputFirstName.sendKeys(firstName);
-        inputLastName.sendKeys(lastName);
-        inputEmail.sendKeys(email);
 
-        switch (gender) {
-            case "Male":
-                btnGenderMale.click();
-                break;
-            case "Female":
-                btnGenderFemale.click();
-                break;
-            case "Other":
-                btnGenderOther.click();
-                break;
-        }
-
-        inputPhone.sendKeys(phone);
-//        inputBirthDate.sendKeys(birthdate);
+        inputFirstName.sendKeys(student.getName());
+        inputLastName.sendKeys(student.getLastName());
+        inputEmail.sendKeys(student.getEmail());
+        clickGender(student.getGender());
+        inputPhone.sendKeys(student.getMobile());
+        enterDateOfBirth(student.getDateOfBirth());
 //        inputSubjects.sendKeys(subjects);
 
-        if (hobbySports) checkboxHobbiesSports.click();
-        if (hobbyReading) checkboxHobbiesReading.click();
-        if (hobbyMusic) checkboxHobbiesMusic.click();
+//        if (hobbySports) checkboxHobbiesSports.click();
+//        if (hobbyReading) checkboxHobbiesReading.click();
+//        if (hobbyMusic) checkboxHobbiesMusic.click();
 
-        inputAddress.sendKeys(address);
+        textareaAddress.sendKeys(student.getAddress());
         // state
         // city
 
         btnSubmit.click();
         System.out.println(tableResults.getText());
+    }
+
+    private void clickGender(Gender gender) {
+        WebElement btnGender = driver.findElement(By.xpath(gender.getLocator()));
+        btnGender.click();
+    }
+
+    private void enterDateOfBirth(String birthDate) {
+        inputBirthDate.click(); // сделали его активным
+        String operationSystem = System.getProperty("os.name");
+        System.out.println(operationSystem);
+        if (operationSystem.startsWith("Win")) {
+            inputBirthDate.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        }
+        inputBirthDate.sendKeys(birthDate);
+        inputBirthDate.sendKeys(Keys.ENTER);
     }
 }
