@@ -2,6 +2,7 @@ package pages;
 
 import dto.Student;
 import enums.Gender;
+import enums.Hobbies;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +10,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+
+import java.util.List;
 
 public class PracticeFormPage extends BasePage {
 
@@ -42,13 +45,19 @@ public class PracticeFormPage extends BasePage {
     @FindBy(css = "label[for='hobbies-checkbox-3']")
     WebElement checkboxHobbiesMusic;
 
+    @FindBy(css = "#react-select-3-input")
+    WebElement inputState;
+
+    @FindBy(xpath = "//input[@id='react-select-3-input']")
+    WebElement inputCity;
+
     @FindBy(css = "textarea#currentAddress")
     WebElement textareaAddress;
 
     @FindBy(css = "button#submit")
     WebElement btnSubmit;
 
-    @FindBy(xpath = "//table[contains(@class, 'table table-dark table-striped table-bordered table-hover')]")
+    @FindBy(css = "#example-modal-sizes-title-lg")
     WebElement tableResults;
 
     public void inputStudentRegForm(Student student) {
@@ -61,15 +70,11 @@ public class PracticeFormPage extends BasePage {
         clickGender(student.getGender());
         inputPhone.sendKeys(student.getMobile());
         enterDateOfBirth(student.getDateOfBirth());
-//        inputSubjects.sendKeys(subjects);
-
-//        if (hobbySports) checkboxHobbiesSports.click();
-//        if (hobbyReading) checkboxHobbiesReading.click();
-//        if (hobbyMusic) checkboxHobbiesMusic.click();
-
+        typeSubjects(student.getSubjects());
+        clickHobbies(student.getHobbies());
         textareaAddress.sendKeys(student.getAddress());
-        // state
-        // city
+//        doesn't click the input because of viewport
+//        enterStateCity(student.getState(), student.getCity());
 
         btnSubmit.click();
         System.out.println(tableResults.getText());
@@ -89,5 +94,37 @@ public class PracticeFormPage extends BasePage {
         }
         inputBirthDate.sendKeys(birthDate);
         inputBirthDate.sendKeys(Keys.ENTER);
+    }
+
+    private void typeSubjects(String subjects) {
+        inputSubjects.click();
+        String [] arr = subjects.split(",");
+        for (String s : arr) {
+            inputSubjects.sendKeys(s);
+            inputSubjects.sendKeys(Keys.ENTER);
+        }
+    }
+
+    private void clickHobbies(List<Hobbies> hobbies) {
+        for (Hobbies h : hobbies) {
+            driver.findElement(By.xpath(h.getLocator())).click();
+//            switch (h) {
+//                case SPORTS: driver.findElement(By.xpath(h.getLocator())).click();
+//                case READING: driver.findElement(By.xpath(h.getLocator())).click();
+//                case MUSIC: driver.findElement(By.xpath(h.getLocator())).click();
+//            }
+        }
+    }
+
+    private void enterStateCity(String state, String city) {
+        inputState.click();
+        inputState.sendKeys(state);
+        inputState.sendKeys(Keys.ENTER);
+        inputCity.sendKeys(city);
+        inputCity.sendKeys(Keys.ENTER);
+    }
+
+    public boolean validateModalMessage() {
+        return isTextInElement(tableResults, "Thanks for submitting the form");
     }
 }
