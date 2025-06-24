@@ -38,17 +38,13 @@ public class PracticeFormPage extends BasePage {
     @FindBy(css = "input#subjectsInput")
     WebElement inputSubjects;
 
-    @FindBy(css = "label[for='hobbies-checkbox-1']")
-    WebElement checkboxHobbiesSports;
-    @FindBy(css = "label[for='hobbies-checkbox-2']")
-    WebElement checkboxHobbiesReading;
-    @FindBy(css = "label[for='hobbies-checkbox-3']")
-    WebElement checkboxHobbiesMusic;
-
+    @FindBy(css = "div#state")
+    WebElement divState;
     @FindBy(css = "#react-select-3-input")
     WebElement inputState;
-
-    @FindBy(xpath = "//input[@id='react-select-3-input']")
+    @FindBy(css = "div#city")
+    WebElement divCity;
+    @FindBy(xpath = "//input[@id='react-select-4-input']")
     WebElement inputCity;
 
     @FindBy(css = "textarea#currentAddress")
@@ -74,7 +70,7 @@ public class PracticeFormPage extends BasePage {
         clickHobbies(student.getHobbies());
         textareaAddress.sendKeys(student.getAddress());
 //        doesn't click the input because of viewport
-//        enterStateCity(student.getState(), student.getCity());
+        enterStateCity(student.getState(), student.getCity());
 
         btnSubmit.click();
         System.out.println(tableResults.getText());
@@ -117,9 +113,13 @@ public class PracticeFormPage extends BasePage {
     }
 
     private void enterStateCity(String state, String city) {
-        inputState.click();
+        int width = inputState.getRect().getWidth();
+        int height = inputState.getRect().getHeight();
+        System.out.println("checkbox: " + width + " X " + height);
+        divState.click();
         inputState.sendKeys(state);
         inputState.sendKeys(Keys.ENTER);
+        divCity.click();
         inputCity.sendKeys(city);
         inputCity.sendKeys(Keys.ENTER);
     }
