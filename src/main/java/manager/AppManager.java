@@ -22,7 +22,7 @@ public class AppManager {
     @AfterMethod
     public void tearDown() {
         // если браузер открыт, закрыть
-//        if (driver != null)
-//            driver.quit();
+        if (driver != null)
+            driver.quit();
     }
 }
